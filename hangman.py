@@ -137,7 +137,7 @@ def hangman(secret_word):
         if is_word_guessed(secret_word, last_guessed):
             if secret_word == ''.join(result.split(' ')):
                 print(f'Congats!!! {N_guesses} guesses left! GG WP=)')
-                tprint(f'{secret_word}')
+                print(f'{secret_word}')
                 break
 
             else:
@@ -154,12 +154,12 @@ def hangman(secret_word):
             else:
                 print(f'Oops! Oops! Oops! Oops! Oops! Oops! Oops! Oops!')
                 print(f'You loose, you have nothing. Word was:')
-                tprint(f'{secret_word}')
+                print(f'{secret_word}')
                 break
 
         if N_guesses < 0:
             print('You loose, you have nothing=( Word was:')
-            tprint(f'{secret_word}')
+            print(f'{secret_word}')
             break
 
         print('-' * 20)
@@ -250,33 +250,53 @@ def hangman_with_hints(secret_word):
     # FILL IN YOUR CODE HERE AND DELETE "pass"
     N_guesses = 6
     N_warning = 3
+    Hints=2
     letters_guessed = []
     print(f"I am thinking of a word that is {len(secret_word)} letters long.")
-    while N_guesses >= 0 or N_warning >= 0:
+    while True :
         available_letters = ''.join(sorted(list(get_available_letters(letters_guessed))))
 
-        print(f"You have {N_guesses} guesses left. Available letters: {available_letters}")
-        letters = input("Guest letter:  ")
+        print(f"You have {N_guesses} guesses left.\t Available letters: {available_letters}")
+        letters = input("Enter the suggested letter:  ")
         letters = letters.lower()
         letters_guessed = letters_guessed + [letters]
         result = get_guessed_word(secret_word, letters_guessed)
 
         if letters == "*":
-            show_possible_matches(result)
-        elif letters in list('abcdefghijklmnopqrstuvwxyz'):
-            print(f'=( That letter is not in my word: {result}')
-            N_guesses = N_guesses - 1
+            if Hints>0:
+                Hints = Hints - 1
+                show_possible_matches(result)
+            else:
+                print("You are used all hints =(")
+                print('-' * 120)
+                continue
         elif is_word_guessed(secret_word, letters):
             if secret_word == ''.join(result.split(' ')):
                 print(f'Congats!!! {N_guesses} guesses left! GG WP=)')
-                tprint(f'{secret_word}')
+                print(f'{secret_word}')
                 break
-
             else:
                 print(f'Good guess: {result}')
+        elif letters in list('abcdefghijklmnopqrstuvwxyz'):
+            print(f'=( That letter is not in my word: {result}')
+            N_guesses = N_guesses - 1
+            if N_guesses <=0:
+                print(f'You loose, you have nothing guesses. Word was:')
+                print(f'{secret_word}')
+                break
+            else:
+                print('-' * 120)
+                continue
         else:
             N_warning = N_warning - 1
             print(f"Oops! That is not a valid letter. You have {N_warning} warning left")
+            if N_warning <=0:
+                print(f'You loose, you have nothing warning. Word was:')
+                print(f'{secret_word}')
+                break
+            else:
+                print('-' * 120)
+                continue
         print('-' * 120)
 
 
